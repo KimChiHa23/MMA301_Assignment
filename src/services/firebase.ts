@@ -1,5 +1,5 @@
 import { initializeApp, getApps, getApp, FirebaseApp } from 'firebase/app';
-import { getFirestore, Firestore } from 'firebase/firestore';
+import { getFirestore, initializeFirestore, Firestore } from 'firebase/firestore';
 
 // Your web app's Firebase configuration
 export const firebaseConfig = {
@@ -23,7 +23,16 @@ if (!getApps().length) {
   app = getApp();
 }
 
-// Initialize Cloud Firestore
-export const db: Firestore = getFirestore(app);
+// Initialize Cloud Firestore with experimentalForceLongPolling for reliable React Native networking
+let firestoreDb: Firestore;
+try {
+  firestoreDb = initializeFirestore(app, {
+    experimentalForceLongPolling: true,
+  });
+} catch {
+  firestoreDb = getFirestore(app);
+}
+
+export const db: Firestore = firestoreDb;
 
 export default app;
