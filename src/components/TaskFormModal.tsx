@@ -11,6 +11,7 @@ import {
   Platform,
   ActivityIndicator,
 } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { Task, TaskStatus, TaskPriority, CreateTaskInput, UpdateTaskInput } from '../types/task';
 import { COLORS, SPACING, RADIUS } from '../constants/theme';
@@ -262,25 +263,33 @@ export const TaskFormModal: React.FC<TaskFormModalProps> = ({
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={styles.submitButton}
+              style={styles.submitButtonWrapper}
               onPress={handleSubmit}
               disabled={submitting}
+              activeOpacity={0.85}
             >
-              {submitting ? (
-                <ActivityIndicator size="small" color="#FFFFFF" />
-              ) : (
-                <>
-                  <Ionicons
-                    name={isEditing ? 'save-outline' : 'checkmark-circle-outline'}
-                    size={18}
-                    color="#FFFFFF"
-                    style={{ marginRight: 6 }}
-                  />
-                  <Text style={styles.submitButtonText}>
-                    {isEditing ? 'Save Changes' : 'Create Task'}
-                  </Text>
-                </>
-              )}
+              <LinearGradient
+                colors={COLORS.gradients.primary}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={styles.submitButton}
+              >
+                {submitting ? (
+                  <ActivityIndicator size="small" color="#FFFFFF" />
+                ) : (
+                  <>
+                    <Ionicons
+                      name={isEditing ? 'save-outline' : 'checkmark-circle-outline'}
+                      size={18}
+                      color="#FFFFFF"
+                      style={{ marginRight: 6 }}
+                    />
+                    <Text style={styles.submitButtonText}>
+                      {isEditing ? 'Save Changes' : 'Create Task'}
+                    </Text>
+                  </>
+                )}
+              </LinearGradient>
             </TouchableOpacity>
           </View>
         </View>
@@ -463,19 +472,23 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: COLORS.textMuted,
   },
-  submitButton: {
+  submitButtonWrapper: {
     flex: 2,
-    flexDirection: 'row',
-    paddingVertical: 12,
-    backgroundColor: COLORS.primary,
     borderRadius: RADIUS.md,
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: COLORS.primary,
+    overflow: 'hidden',
+    shadowColor: '#0284C7',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.25,
     shadowRadius: 6,
     elevation: 3,
+  },
+  submitButton: {
+    width: '100%',
+    flexDirection: 'row',
+    paddingVertical: 12,
+    borderRadius: RADIUS.md,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   submitButtonText: {
     fontSize: 14,

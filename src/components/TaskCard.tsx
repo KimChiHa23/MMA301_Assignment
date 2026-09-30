@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { Task } from '../types/task';
 import { COLORS, SPACING, RADIUS } from '../constants/theme';
@@ -20,6 +21,22 @@ export const TaskCard: React.FC<TaskCardProps> = ({
   const statusConfig = COLORS.status[task.status] || COLORS.status.todo;
   const priorityConfig = COLORS.priority[task.priority] || COLORS.priority.medium;
 
+  // 2-3 blended gradient colors for left accent bar
+  const getGradientColors = (): readonly [string, string, ...string[]] => {
+    if (task.status === 'done') {
+      return COLORS.gradients.taskStatus.done;
+    }
+    if (task.priority === 'high') {
+      return COLORS.gradients.taskPriority.high;
+    }
+    if (task.priority === 'medium') {
+      return COLORS.gradients.taskPriority.medium;
+    }
+    return COLORS.gradients.taskPriority.low;
+  };
+
+  const gradientColors = getGradientColors();
+
   const handleDeletePress = () => {
     Alert.alert(
       'Delete Task',
@@ -39,99 +56,109 @@ export const TaskCard: React.FC<TaskCardProps> = ({
 
   return (
     <View style={[styles.card, isCompleted && styles.completedCard]}>
-      {/* Top Header Row */}
-      <View style={styles.topRow}>
-        <View style={styles.badges}>
-          {/* Status Badge */}
-          <View
-            style={[
-              styles.badge,
-              { backgroundColor: statusConfig.bg, borderColor: statusConfig.border, borderWidth: 1 },
-            ]}
-          >
-            <Text style={[styles.badgeText, { color: statusConfig.text }]}>
-              {statusConfig.label}
-            </Text>
+      {/* 2-3 Color Blended Accent Bar on the Left Edge */}
+      <LinearGradient
+        colors={gradientColors}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 0, y: 1 }}
+        style={styles.leftAccentBar}
+      />
+
+      <View style={styles.cardContent}>
+        {/* Top Header Row */}
+        <View style={styles.topRow}>
+          <View style={styles.badges}>
+            {/* Status Badge */}
+            <View
+              style={[
+                styles.badge,
+                { backgroundColor: statusConfig.bg, borderColor: statusConfig.border, borderWidth: 1 },
+              ]}
+            >
+              <Text style={[styles.badgeText, { color: statusConfig.text }]}>
+                {statusConfig.label}
+              </Text>
+            </View>
+
+            {/* Priority Badge */}
+            <View style={[styles.badge, { backgroundColor: priorityConfig.bg }]}>
+              <Ionicons
+                name={task.priority === 'high' ? 'alert-circle' : 'flag-outline'}
+                size={12}
+                color={priorityConfig.text}
+                style={{ marginRight: 3 }}
+              />
+              <Text style={[styles.badgeText, { color: priorityConfig.text }]}>
+                {priorityConfig.label}
+              </Text>
+            </View>
           </View>
 
-          {/* Priority Badge */}
-          <View style={[styles.badge, { backgroundColor: priorityConfig.bg }]}>
+          {/* Action Buttons */}
+          <View style={styles.actions}>
+            <TouchableOpacity
+              style={styles.actionButton}
+              onPress={() => onEdit(task)}
+              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+              accessibilityLabel={`Edit task ${task.title}`}
+            >
+              <Ionicons name="create-outline" size={18} color={COLORS.primary} />
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[styles.actionButton, styles.deleteButton]}
+              onPress={handleDeletePress}
+              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+              accessibilityLabel={`Delete task ${task.title}`}
+            >
+              <Ionicons name="trash-outline" size={18} color={COLORS.danger} />
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        {/* Main Content Row */}
+        <View style={styles.mainContent}>
+          <TouchableOpacity
+            style={styles.checkCircle}
+            onPress={() => onToggleStatus && onToggleStatus(task)}
+            hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
+          >
             <Ionicons
-              name={task.priority === 'high' ? 'alert-circle' : 'flag-outline'}
-              size={12}
-              color={priorityConfig.text}
-              style={{ marginRight: 3 }}
+              name={isCompleted ? 'checkmark-circle' : 'ellipse-outline'}
+              size={22}
+              color={isCompleted ? COLORS.success : '#94A3B8'}
             />
-            <Text style={[styles.badgeText, { color: priorityConfig.text }]}>
-              {priorityConfig.label}
+          </TouchableOpacity>
+
+          <View style={styles.textWrapper}>
+            <Text
+              style={[styles.title, isCompleted && styles.completedTitle]}
+              numberOfLines={2}
+            >
+              {task.title}
             </Text>
+
+            {task.description ? (
+              <Text style={styles.description} numberOfLines={3}>
+                {task.description}
+              </Text>
+            ) : null}
           </View>
         </View>
 
-        {/* Action Buttons */}
-        <View style={styles.actions}>
-          <TouchableOpacity
-            style={styles.actionButton}
-            onPress={() => onEdit(task)}
-            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-            accessibilityLabel={`Edit task ${task.title}`}
-          >
-            <Ionicons name="create-outline" size={19} color={COLORS.primary} />
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[styles.actionButton, styles.deleteButton]}
-            onPress={handleDeletePress}
-            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-            accessibilityLabel={`Delete task ${task.title}`}
-          >
-            <Ionicons name="trash-outline" size={19} color={COLORS.danger} />
-          </TouchableOpacity>
-        </View>
-      </View>
-
-      {/* Main Content Row */}
-      <View style={styles.mainContent}>
-        <TouchableOpacity
-          style={styles.checkCircle}
-          onPress={() => onToggleStatus && onToggleStatus(task)}
-          hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
-        >
-          <Ionicons
-            name={isCompleted ? 'checkmark-circle' : 'ellipse-outline'}
-            size={22}
-            color={isCompleted ? COLORS.success : COLORS.textMuted}
-          />
-        </TouchableOpacity>
-
-        <View style={styles.textWrapper}>
-          <Text
-            style={[styles.title, isCompleted && styles.completedTitle]}
-            numberOfLines={2}
-          >
-            {task.title}
-          </Text>
-
-          {task.description ? (
-            <Text style={styles.description} numberOfLines={3}>
-              {task.description}
+        {/* Footer Info Row */}
+        <View style={styles.footerRow}>
+          <View style={styles.dateRow}>
+            <Ionicons name="calendar-outline" size={13} color={COLORS.textMuted} />
+            <Text style={styles.dateText}>
+              Due: {task.dueDate ? task.dueDate : 'No due date'}
             </Text>
-          ) : null}
-        </View>
-      </View>
+          </View>
 
-      {/* Footer Info Row */}
-      <View style={styles.footerRow}>
-        <View style={styles.dateRow}>
-          <Ionicons name="calendar-outline" size={13} color={COLORS.textMuted} />
-          <Text style={styles.dateText}>
-            Due: {task.dueDate ? task.dueDate : 'No due date'}
+          <Text style={styles.createdText}>
+            ID: {task.id.slice(0, 8)}...
           </Text>
         </View>
-
-        <Text style={styles.createdText}>
-          ID: {task.id.slice(0, 8)}...
-        </Text>
       </View>
     </View>
   );
@@ -141,18 +168,28 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: COLORS.card,
     borderRadius: RADIUS.md,
-    padding: SPACING.md,
     marginBottom: SPACING.sm + 4,
     borderWidth: 1,
-    borderColor: COLORS.border,
-    shadowColor: '#0F172A',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 6,
-    elevation: 2,
+    borderColor: '#E0F2FE', // Soft light blue border
+    shadowColor: '#0284C7',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+    elevation: 3,
+    flexDirection: 'row',
+    overflow: 'hidden',
+  },
+  leftAccentBar: {
+    width: 6,
+    height: '100%',
+  },
+  cardContent: {
+    flex: 1,
+    padding: SPACING.md,
+    paddingLeft: SPACING.sm + 4,
   },
   completedCard: {
-    opacity: 0.85,
+    opacity: 0.82,
     backgroundColor: '#F8FAFC',
   },
   topRow: {
@@ -182,12 +219,15 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   actionButton: {
-    padding: 4,
+    padding: 5,
     borderRadius: RADIUS.sm,
-    backgroundColor: COLORS.primaryLight,
+    backgroundColor: '#F0F9FF',
+    borderWidth: 1,
+    borderColor: '#BAE6FD',
   },
   deleteButton: {
     backgroundColor: COLORS.dangerLight,
+    borderColor: '#FECDD3',
   },
   mainContent: {
     flexDirection: 'row',

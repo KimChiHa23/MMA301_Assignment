@@ -11,6 +11,7 @@ import {
   useWindowDimensions,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { useTasks } from '../hooks/useTasks';
 import { Task, TaskStatus, CreateTaskInput, UpdateTaskInput } from '../types/task';
@@ -123,12 +124,19 @@ export const HomeScreen: React.FC = () => {
           </View>
 
           <TouchableOpacity
-            style={styles.createButton}
             onPress={handleOpenCreateModal}
+            activeOpacity={0.85}
             accessibilityLabel="Create New Task"
           >
-            <Ionicons name="add" size={20} color="#FFFFFF" />
-            <Text style={styles.createButtonText}>Add Task</Text>
+            <LinearGradient
+              colors={COLORS.gradients.primary}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={styles.createButton}
+            >
+              <Ionicons name="add" size={20} color="#FFFFFF" />
+              <Text style={styles.createButtonText}>Add Task</Text>
+            </LinearGradient>
           </TouchableOpacity>
         </View>
 
@@ -222,11 +230,18 @@ export const HomeScreen: React.FC = () => {
                 </Text>
                 <View style={styles.emptyActionRow}>
                   <TouchableOpacity
-                    style={styles.emptyAddButton}
                     onPress={handleOpenCreateModal}
+                    activeOpacity={0.85}
                   >
-                    <Ionicons name="add" size={18} color="#FFFFFF" />
-                    <Text style={styles.emptyAddButtonText}>Create Task Now</Text>
+                    <LinearGradient
+                      colors={COLORS.gradients.primary}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 0 }}
+                      style={styles.emptyAddButton}
+                    >
+                      <Ionicons name="add" size={18} color="#FFFFFF" />
+                      <Text style={styles.emptyAddButtonText}>Create Task Now</Text>
+                    </LinearGradient>
                   </TouchableOpacity>
 
                   {!searchQuery && activeFilter === 'all' && (
@@ -282,11 +297,11 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: COLORS.card,
+    backgroundColor: '#FFFFFF',
     borderRadius: RADIUS.md,
     paddingHorizontal: 12,
     borderWidth: 1,
-    borderColor: COLORS.border,
+    borderColor: '#BAE6FD',
     height: 44,
   },
   searchInput: {
@@ -298,14 +313,13 @@ const styles = StyleSheet.create({
   createButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: COLORS.primary,
-    paddingHorizontal: 14,
+    paddingHorizontal: 15,
     height: 44,
     borderRadius: RADIUS.md,
     gap: 4,
-    shadowColor: COLORS.primary,
+    shadowColor: '#0284C7',
     shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.25,
+    shadowOpacity: 0.2,
     shadowRadius: 5,
     elevation: 3,
   },
@@ -322,17 +336,17 @@ const styles = StyleSheet.create({
   filterChip: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: COLORS.card,
+    backgroundColor: '#FFFFFF',
     borderWidth: 1,
-    borderColor: COLORS.border,
+    borderColor: '#E2E8F0',
     paddingVertical: 6,
     paddingHorizontal: 10,
     borderRadius: RADIUS.full,
     gap: 6,
   },
   filterChipSelected: {
-    backgroundColor: COLORS.primary,
-    borderColor: COLORS.primary,
+    backgroundColor: '#E0F2FE', // Light sky blue
+    borderColor: '#38BDF8',
   },
   filterChipText: {
     fontSize: 12,
@@ -340,7 +354,7 @@ const styles = StyleSheet.create({
     color: COLORS.textMuted,
   },
   filterChipTextSelected: {
-    color: '#FFFFFF',
+    color: '#0369A1', // Sky 700
   },
   filterBadge: {
     backgroundColor: '#F1F5F9',
@@ -349,7 +363,7 @@ const styles = StyleSheet.create({
     paddingVertical: 1,
   },
   filterBadgeSelected: {
-    backgroundColor: 'rgba(255, 255, 255, 0.25)',
+    backgroundColor: '#0284C7',
   },
   filterBadgeText: {
     fontSize: 11,

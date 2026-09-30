@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS, SPACING, RADIUS } from '../constants/theme';
 import { isFirebaseConfigured } from '../services/firebase';
@@ -17,16 +18,23 @@ export const Header: React.FC<HeaderProps> = ({
     <View style={styles.container}>
       <View style={styles.topRow}>
         <View style={styles.titleWrapper}>
-          <View style={styles.logoIcon}>
+          {/* Logo with 3-color blended gradient: Sky -> Cyan -> Mint */}
+          <LinearGradient
+            colors={COLORS.gradients.logo}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.logoIcon}
+          >
             <Ionicons name="checkbox-outline" size={24} color="#FFFFFF" />
-          </View>
+          </LinearGradient>
+
           <View>
             <Text style={styles.title}>{title}</Text>
             <View style={styles.badgeRow}>
               <View
                 style={[
                   styles.statusDot,
-                  { backgroundColor: isFirebaseConfigured ? COLORS.success : '#F59E0B' },
+                  { backgroundColor: isFirebaseConfigured ? '#10B981' : '#F59E0B' },
                 ]}
               />
               <Text style={styles.badgeText}>
@@ -46,9 +54,9 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.card,
     paddingHorizontal: SPACING.md,
     paddingTop: SPACING.md,
-    paddingBottom: SPACING.sm,
+    paddingBottom: SPACING.sm + 2,
     borderBottomWidth: 1,
-    borderBottomColor: COLORS.border,
+    borderBottomColor: '#E0F2FE', // Soft sky blue border
   },
   topRow: {
     flexDirection: 'row',
@@ -64,19 +72,18 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: RADIUS.md,
-    backgroundColor: COLORS.primary,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: COLORS.primary,
+    shadowColor: '#0284C7',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
+    shadowOpacity: 0.25,
     shadowRadius: 8,
     elevation: 4,
   },
   title: {
     fontSize: 22,
     fontWeight: '700',
-    color: COLORS.text,
+    color: '#0F172A',
     letterSpacing: -0.5,
   },
   badgeRow: {
@@ -92,8 +99,8 @@ const styles = StyleSheet.create({
   },
   badgeText: {
     fontSize: 12,
-    color: COLORS.textMuted,
-    fontWeight: '500',
+    color: '#0369A1', // Sky 700
+    fontWeight: '600',
   },
   subtitle: {
     fontSize: 13,
