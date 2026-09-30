@@ -10,6 +10,7 @@ import {
   ActivityIndicator,
   useWindowDimensions,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useTasks } from '../hooks/useTasks';
 import { Task, TaskStatus, CreateTaskInput, UpdateTaskInput } from '../types/task';
@@ -98,7 +99,7 @@ export const HomeScreen: React.FC = () => {
   ];
 
   return (
-    <View style={styles.safeArea}>
+    <SafeAreaView style={styles.safeArea} edges={['top']}>
       <Header />
 
       <View style={[styles.mainWrapper, isTablet && styles.tabletContainer]}>
@@ -238,17 +239,18 @@ export const HomeScreen: React.FC = () => {
         onSubmit={handleFormSubmit}
         taskToEdit={taskToEdit}
       />
-    </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: COLORS.background,
+    backgroundColor: COLORS.card,
   },
   mainWrapper: {
     flex: 1,
+    backgroundColor: COLORS.background,
     paddingHorizontal: SPACING.md,
     paddingTop: SPACING.sm,
   },
