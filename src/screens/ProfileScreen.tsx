@@ -24,6 +24,16 @@ export const ProfileScreen: React.FC = () => {
         <View style={styles.infoSection}>
           <View style={styles.infoRow}>
             <View style={styles.infoIconWrapper}>
+              <Ionicons name="sparkles" size={18} color={COLORS.primary} />
+            </View>
+            <View style={styles.infoContent}>
+              <Text style={styles.infoLabel}>Application</Text>
+              <Text style={styles.infoValue}>TaskAura PRO (v1.0)</Text>
+            </View>
+          </View>
+
+          <View style={styles.infoRow}>
+            <View style={styles.infoIconWrapper}>
               <Ionicons name="school-outline" size={18} color={COLORS.primary} />
             </View>
             <View style={styles.infoContent}>

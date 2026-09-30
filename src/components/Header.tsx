@@ -11,25 +11,36 @@ interface HeaderProps {
 }
 
 export const Header: React.FC<HeaderProps> = ({
-  title = 'TaskFlow Pro',
-  subtitle = 'Manage your daily tasks efficiently & stay organized',
+  subtitle = 'Smart task management with live cloud sync',
 }) => {
   return (
     <View style={styles.container}>
       <View style={styles.topRow}>
         <View style={styles.titleWrapper}>
-          {/* Logo with 3-color blended gradient: Sky -> Cyan -> Mint */}
+          {/* Brand New Modern App Logo with 3-Color Blended Gradient & Dual-layer Icon */}
           <LinearGradient
-            colors={COLORS.gradients.logo}
+            colors={COLORS.gradients.primary}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
-            style={styles.logoIcon}
+            style={styles.logoContainer}
           >
-            <Ionicons name="checkbox-outline" size={24} color="#FFFFFF" />
+            <View style={styles.logoInnerBorder}>
+              <Ionicons name="sparkles" size={22} color="#FFFFFF" />
+            </View>
           </LinearGradient>
 
-          <View>
-            <Text style={styles.title}>{title}</Text>
+          {/* Re-designed Brand Typography */}
+          <View style={styles.brandContent}>
+            <View style={styles.nameRow}>
+              <Text style={styles.brandName}>
+                Task<Text style={styles.brandHighlight}>Aura</Text>
+              </Text>
+              <View style={styles.proBadge}>
+                <Text style={styles.proBadgeText}>PRO</Text>
+              </View>
+            </View>
+
+            {/* Live Firestore Connection Status */}
             <View style={styles.badgeRow}>
               <View
                 style={[
@@ -38,12 +49,13 @@ export const Header: React.FC<HeaderProps> = ({
                 ]}
               />
               <Text style={styles.badgeText}>
-                {isFirebaseConfigured ? 'Firestore Live: mma301-1cae2' : 'Firestore Demo Mode'}
+                {isFirebaseConfigured ? 'Live Cloud: mma301-1cae2' : 'Firestore Demo Mode'}
               </Text>
             </View>
           </View>
         </View>
       </View>
+
       {subtitle ? <Text style={styles.subtitle}>{subtitle}</Text> : null}
     </View>
   );
@@ -68,23 +80,59 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 12,
   },
-  logoIcon: {
-    width: 44,
-    height: 44,
-    borderRadius: RADIUS.md,
+  logoContainer: {
+    width: 48,
+    height: 48,
+    borderRadius: RADIUS.md + 2,
     alignItems: 'center',
     justifyContent: 'center',
     shadowColor: '#6366F1',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.28,
-    shadowRadius: 8,
-    elevation: 4,
+    shadowOpacity: 0.35,
+    shadowRadius: 10,
+    elevation: 5,
   },
-  title: {
-    fontSize: 22,
-    fontWeight: '700',
+  logoInnerBorder: {
+    width: 42,
+    height: 42,
+    borderRadius: RADIUS.md,
+    borderWidth: 1.5,
+    borderColor: 'rgba(255, 255, 255, 0.45)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+  },
+  brandContent: {
+    justifyContent: 'center',
+  },
+  nameRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  brandName: {
+    fontSize: 23,
+    fontWeight: '800',
     color: '#0F172A',
     letterSpacing: -0.5,
+  },
+  brandHighlight: {
+    color: '#6366F1', // Periwinkle / Blue-violet
+    fontWeight: '900',
+  },
+  proBadge: {
+    backgroundColor: '#EEF2FF',
+    borderColor: '#C7D2FE',
+    borderWidth: 1,
+    paddingHorizontal: 6,
+    paddingVertical: 1.5,
+    borderRadius: RADIUS.sm,
+  },
+  proBadgeText: {
+    fontSize: 10,
+    fontWeight: '800',
+    color: '#4F46E5',
+    letterSpacing: 0.5,
   },
   badgeRow: {
     flexDirection: 'row',
@@ -99,13 +147,13 @@ const styles = StyleSheet.create({
   },
   badgeText: {
     fontSize: 12,
-    color: '#4F46E5', // Indigo 600
+    color: '#4F46E5',
     fontWeight: '600',
   },
   subtitle: {
     fontSize: 13,
     color: COLORS.textMuted,
-    marginTop: SPACING.xs,
+    marginTop: SPACING.xs + 2,
     lineHeight: 18,
   },
 });

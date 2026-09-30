@@ -1,4 +1,4 @@
-# TaskFlow Pro – Task Management Mobile App (Practical Exam 1)
+# TaskAura PRO – Task Management Mobile App (Practical Exam 1)
 
 > **Course**: MMA301 – Mobile Programming  
 > **Topic**: Technical Foundation of Task Management App: React Native (Expo), Firebase Firestore Setup & Real-time CRUD (No Authentication)
@@ -7,7 +7,7 @@
 
 ## 📱 Project Overview
 
-**TaskFlow Pro** is a modern, responsive cross-platform mobile application built with **React Native** and **Expo (TypeScript)**, connected directly to **Google Cloud Firestore** for seamless, real-time task management. 
+**TaskAura PRO** is a modern, responsive cross-platform mobile application built with **React Native** and **Expo (TypeScript)**, connected directly to **Google Cloud Firestore** for seamless, real-time task management. 
 
 ### Key Highlights
 - **Architecture**: Modular structure separating screens, components, services, types, and hooks.
