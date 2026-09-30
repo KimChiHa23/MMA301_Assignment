@@ -1,51 +1,50 @@
 export const COLORS = {
-  // Main Theme: Soft Oceanic Blue & Mint Gradient Mix
-  primary: '#0284C7', // Sky 600
-  primaryLight: '#E0F2FE', // Sky 100
-  primaryDark: '#0369A1',
-  secondary: '#06B6D4', // Cyan
-  mint: '#14B8A6', // Teal / Mint
-  lavender: '#818CF8', // Soft Indigo / Lavender
-  background: '#F0F9FF', // Sky 50 (Soft light blue background)
+  // Main Theme: Soft Periwinkle & Light Blue-Violet Palette (Màu Xanh Tím Nhạt)
+  primary: '#6366F1', // Indigo / Periwinkle (Xanh tím chủ đạo)
+  primaryLight: '#EEF2FF', // Xanh tím nhạt pastel
+  primaryDark: '#4F46E5', // Xanh tím đậm
+  periwinkle: '#818CF8', // Xanh tím phấn
+  skyBlue: '#38BDF8', // Xanh da trời nhạt
+  lavender: '#A78BFA', // Tím nhạt Lavender
+  lilac: '#C084FC', // Tím hoa cà nhạt
+  background: '#F5F3FF', // Nền tím xanh nhạt siêu êm dịu (Violet 50)
   card: '#FFFFFF',
   text: '#0F172A', // Slate 900
   textMuted: '#64748B', // Slate 500
-  border: '#E2E8F0', // Slate 200
+  border: '#E0E7FF', // Viền xanh tím pastel siêu mỏng
 
-  // Curated 2-3 Color Blended Gradients
+  // Curated 2-3 Color Blended Gradients (Xanh tím nhạt pha trộn)
   gradients: {
-    // Primary Button / Accent: Sky Blue -> Cyan -> Mint
-    primary: ['#0EA5E9', '#06B6D4', '#14B8A6'] as const,
-    // Logo / Header Icon
-    logo: ['#38BDF8', '#0EA5E9', '#2DD4BF'] as const,
-    // Soft Header Background Wash
-    headerWash: ['#FFFFFF', '#F0F9FF', '#E0F2FE'] as const,
+    // Primary Button / Accent: Sky Blue -> Xanh tím Periwinkle -> Tím Lilac
+    primary: ['#38BDF8', '#6366F1', '#A855F7'] as const,
+    // Logo Icon: Xanh nhạt -> Xanh tím -> Lavender
+    logo: ['#60A5FA', '#6366F1', '#C084FC'] as const,
 
-    // Task Card Left-Side Accent Bar Gradients (Pha 2-3 màu ở thanh bên trái)
+    // Task Card Left-Side Accent Bar (Thanh bên trái khung pha màu xanh tím nhạt)
     taskStatus: {
-      todo: ['#38BDF8', '#6366F1', '#A855F7'] as const, // Sky Blue -> Indigo -> Purple
-      in_progress: ['#0EA5E9', '#06B6D4', '#2DD4BF'] as const, // Sky -> Cyan -> Mint
-      done: ['#2DD4BF', '#10B981', '#34D399'] as const, // Mint -> Emerald -> Light Green
+      todo: ['#818CF8', '#A855F7', '#C084FC'] as const, // Xanh tím -> Tím hoa cà -> Lilac
+      in_progress: ['#38BDF8', '#6366F1', '#818CF8'] as const, // Sky -> Xanh tím -> Periwinkle
+      done: ['#34D399', '#818CF8', '#A78BFA'] as const, // Mint pastel -> Xanh tím -> Lavender
     },
     taskPriority: {
-      high: ['#F43F5E', '#FB923C', '#FBBF24'] as const, // Rose -> Coral -> Amber
-      medium: ['#38BDF8', '#818CF8', '#06B6D4'] as const, // Sky Blue -> Lavender -> Cyan
-      low: ['#2DD4BF', '#34D399', '#38BDF8'] as const, // Mint -> Light Emerald -> Sky Blue
+      high: ['#F43F5E', '#EC4899', '#A855F7'] as const, // Rose -> Hồng tím -> Tím
+      medium: ['#38BDF8', '#818CF8', '#C084FC'] as const, // Sky nhạt -> Xanh tím nhạt -> Lavender
+      low: ['#2DD4BF', '#60A5FA', '#818CF8'] as const, // Mint -> Sky -> Xanh tím
     },
   },
   
   // Status colors for chips and badges
   status: {
     todo: {
-      bg: '#F0F9FF',
-      text: '#0284C7',
-      border: '#BAE6FD',
+      bg: '#F5F3FF',
+      text: '#7C3AED',
+      border: '#DDD6FE',
       label: 'To Do',
     },
     in_progress: {
-      bg: '#ECFEFF',
-      text: '#0891B2',
-      border: '#A5F3FC',
+      bg: '#EEF2FF',
+      text: '#4F46E5',
+      border: '#C7D2FE',
       label: 'In Progress',
     },
     done: {
@@ -64,8 +63,8 @@ export const COLORS = {
       label: 'Low',
     },
     medium: {
-      bg: '#EFF6FF',
-      text: '#2563EB',
+      bg: '#EEF2FF',
+      text: '#4F46E5',
       label: 'Medium',
     },
     high: {

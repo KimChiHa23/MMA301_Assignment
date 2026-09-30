@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
     paddingTop: SPACING.md,
     paddingBottom: SPACING.sm + 2,
     borderBottomWidth: 1,
-    borderBottomColor: '#E0F2FE', // Soft sky blue border
+    borderBottomColor: '#EDE9FE', // Soft violet border
   },
   topRow: {
     flexDirection: 'row',
@@ -74,9 +74,9 @@ const styles = StyleSheet.create({
     borderRadius: RADIUS.md,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#0284C7',
+    shadowColor: '#6366F1',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.25,
+    shadowOpacity: 0.28,
     shadowRadius: 8,
     elevation: 4,
   },
@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
   },
   badgeText: {
     fontSize: 12,
-    color: '#0369A1', // Sky 700
+    color: '#4F46E5', // Indigo 600
     fontWeight: '600',
   },
   subtitle: {

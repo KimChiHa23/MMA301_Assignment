@@ -301,7 +301,7 @@ const styles = StyleSheet.create({
     borderRadius: RADIUS.md,
     paddingHorizontal: 12,
     borderWidth: 1,
-    borderColor: '#BAE6FD',
+    borderColor: '#DDD6FE', // Soft violet border
     height: 44,
   },
   searchInput: {
@@ -317,9 +317,9 @@ const styles = StyleSheet.create({
     height: 44,
     borderRadius: RADIUS.md,
     gap: 4,
-    shadowColor: '#0284C7',
+    shadowColor: '#6366F1',
     shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.2,
+    shadowOpacity: 0.25,
     shadowRadius: 5,
     elevation: 3,
   },
@@ -338,15 +338,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#FFFFFF',
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: '#E0E7FF',
     paddingVertical: 6,
     paddingHorizontal: 10,
     borderRadius: RADIUS.full,
     gap: 6,
   },
   filterChipSelected: {
-    backgroundColor: '#E0F2FE', // Light sky blue
-    borderColor: '#38BDF8',
+    backgroundColor: '#EEF2FF', // Xanh tím nhạt
+    borderColor: '#818CF8',
   },
   filterChipText: {
     fontSize: 12,
@@ -354,7 +354,7 @@ const styles = StyleSheet.create({
     color: COLORS.textMuted,
   },
   filterChipTextSelected: {
-    color: '#0369A1', // Sky 700
+    color: '#4F46E5', // Indigo 600
   },
   filterBadge: {
     backgroundColor: '#F1F5F9',
@@ -363,7 +363,7 @@ const styles = StyleSheet.create({
     paddingVertical: 1,
   },
   filterBadgeSelected: {
-    backgroundColor: '#0284C7',
+    backgroundColor: '#6366F1',
   },
   filterBadgeText: {
     fontSize: 11,

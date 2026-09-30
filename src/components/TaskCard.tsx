@@ -170,10 +170,10 @@ const styles = StyleSheet.create({
     borderRadius: RADIUS.md,
     marginBottom: SPACING.sm + 4,
     borderWidth: 1,
-    borderColor: '#E0F2FE', // Soft light blue border
-    shadowColor: '#0284C7',
+    borderColor: '#EDE9FE', // Soft violet border
+    shadowColor: '#6366F1',
     shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.08,
+    shadowOpacity: 0.1,
     shadowRadius: 8,
     elevation: 3,
     flexDirection: 'row',
@@ -190,7 +190,7 @@ const styles = StyleSheet.create({
   },
   completedCard: {
     opacity: 0.82,
-    backgroundColor: '#F8FAFC',
+    backgroundColor: '#FAF5FF',
   },
   topRow: {
     flexDirection: 'row',
@@ -221,9 +221,9 @@ const styles = StyleSheet.create({
   actionButton: {
     padding: 5,
     borderRadius: RADIUS.sm,
-    backgroundColor: '#F0F9FF',
+    backgroundColor: '#F5F3FF',
     borderWidth: 1,
-    borderColor: '#BAE6FD',
+    borderColor: '#DDD6FE',
   },
   deleteButton: {
     backgroundColor: COLORS.dangerLight,
