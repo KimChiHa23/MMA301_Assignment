@@ -1,22 +1,19 @@
 import { initializeApp, getApps, getApp, FirebaseApp } from 'firebase/app';
 import { getFirestore, Firestore } from 'firebase/firestore';
 
-// Read config from Expo public environment variables or fallback values
-const firebaseConfig = {
-  apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY || 'AIzaSyDummyKey_ReplaceWithYourActualKey',
-  authDomain: process.env.EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN || 'taskmanager-exam1.firebaseapp.com',
-  projectId: process.env.EXPO_PUBLIC_FIREBASE_PROJECT_ID || 'taskmanager-exam1',
-  storageBucket: process.env.EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET || 'taskmanager-exam1.appspot.com',
-  messagingSenderId: process.env.EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID || '123456789012',
-  appId: process.env.EXPO_PUBLIC_FIREBASE_APP_ID || '1:123456789012:web:abcdef1234567890',
-  measurementId: process.env.EXPO_PUBLIC_FIREBASE_MEASUREMENT_ID || 'G-EXAMPLE123',
+// Your web app's Firebase configuration
+export const firebaseConfig = {
+  apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY || 'AIzaSyDr2bDIQ7MI-bYK_pbBcYTt4VARweVbbTg',
+  authDomain: process.env.EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN || 'mma301-1cae2.firebaseapp.com',
+  projectId: process.env.EXPO_PUBLIC_FIREBASE_PROJECT_ID || 'mma301-1cae2',
+  storageBucket: process.env.EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET || 'mma301-1cae2.firebasestorage.app',
+  messagingSenderId: process.env.EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID || '652163214878',
+  appId: process.env.EXPO_PUBLIC_FIREBASE_APP_ID || '1:652163214878:web:a09e3e21afdb570116080f',
+  measurementId: process.env.EXPO_PUBLIC_FIREBASE_MEASUREMENT_ID || 'G-Z52JVHN4M1',
 };
 
 // Check if actual configuration has been provided
-export const isFirebaseConfigured = Boolean(
-  process.env.EXPO_PUBLIC_FIREBASE_PROJECT_ID &&
-  process.env.EXPO_PUBLIC_FIREBASE_PROJECT_ID !== 'taskmanager-exam1'
-);
+export const isFirebaseConfigured = true;
 
 // Initialize Firebase App singleton
 let app: FirebaseApp;

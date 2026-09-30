@@ -30,7 +30,7 @@ export const Header: React.FC<HeaderProps> = ({
                 ]}
               />
               <Text style={styles.badgeText}>
-                {isFirebaseConfigured ? 'Firestore Connected' : 'Firestore Ready / Demo Mode'}
+                {isFirebaseConfigured ? 'Firestore Live: mma301-1cae2' : 'Firestore Demo Mode'}
               </Text>
             </View>
           </View>

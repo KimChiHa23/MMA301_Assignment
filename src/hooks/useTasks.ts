@@ -6,6 +6,7 @@ import {
   createTask as apiCreateTask,
   updateTask as apiUpdateTask,
   deleteTask as apiDeleteTask,
+  seedInitialTasksToFirestore,
 } from '../services/taskService';
 
 export const useTasks = () => {
@@ -14,7 +15,7 @@ export const useTasks = () => {
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Subscribe to real-time updates
+  // Subscribe to real-time updates from Cloud Firestore
   useEffect(() => {
     setLoading(true);
     const unsubscribe = subscribeToTasks(
@@ -76,6 +77,17 @@ export const useTasks = () => {
     }
   }, []);
 
+  const seedInitialTasks = useCallback(async () => {
+    setLoading(true);
+    try {
+      await seedInitialTasksToFirestore();
+    } catch (err: any) {
+      setError(err?.message || 'Failed to seed sample tasks');
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   return {
     tasks,
     loading,
@@ -85,5 +97,6 @@ export const useTasks = () => {
     createTask,
     updateTask,
     deleteTask,
+    seedInitialTasks,
   };
 };

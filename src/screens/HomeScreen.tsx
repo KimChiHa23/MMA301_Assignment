@@ -34,6 +34,7 @@ export const HomeScreen: React.FC = () => {
     createTask,
     updateTask,
     deleteTask,
+    seedInitialTasks,
   } = useTasks();
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -219,13 +220,25 @@ export const HomeScreen: React.FC = () => {
                     ? 'No tasks match your current filter or search criteria.'
                     : 'Get started by creating your first task!'}
                 </Text>
-                <TouchableOpacity
-                  style={styles.emptyAddButton}
-                  onPress={handleOpenCreateModal}
-                >
-                  <Ionicons name="add" size={18} color="#FFFFFF" />
-                  <Text style={styles.emptyAddButtonText}>Create Task Now</Text>
-                </TouchableOpacity>
+                <View style={styles.emptyActionRow}>
+                  <TouchableOpacity
+                    style={styles.emptyAddButton}
+                    onPress={handleOpenCreateModal}
+                  >
+                    <Ionicons name="add" size={18} color="#FFFFFF" />
+                    <Text style={styles.emptyAddButtonText}>Create Task Now</Text>
+                  </TouchableOpacity>
+
+                  {!searchQuery && activeFilter === 'all' && (
+                    <TouchableOpacity
+                      style={styles.seedButton}
+                      onPress={seedInitialTasks}
+                    >
+                      <Ionicons name="cloud-upload-outline" size={18} color={COLORS.primary} />
+                      <Text style={styles.seedButtonText}>Seed Sample Tasks</Text>
+                    </TouchableOpacity>
+                  )}
+                </View>
               </View>
             }
           />
@@ -404,6 +417,13 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     maxWidth: 280,
   },
+  emptyActionRow: {
+    flexDirection: 'row',
+    gap: 12,
+    alignItems: 'center',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+  },
   emptyAddButton: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -415,6 +435,22 @@ const styles = StyleSheet.create({
   },
   emptyAddButtonText: {
     color: '#FFFFFF',
+    fontWeight: '600',
+    fontSize: 13,
+  },
+  seedButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: COLORS.primaryLight,
+    borderWidth: 1,
+    borderColor: '#C7D2FE',
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: RADIUS.md,
+    gap: 6,
+  },
+  seedButtonText: {
+    color: COLORS.primary,
     fontWeight: '600',
     fontSize: 13,
   },
