@@ -3,6 +3,13 @@
 > **Course**: MMA301 – Mobile Programming  
 > **Topic**: Practical Exam 2: Firebase Authentication, Real Team Management, Task-Team-Assignee Linking, Real-time Team Chat & Cloud Firestore Security Rules
 
+[![Android APK Download](https://img.shields.io/badge/Download-Android%20APK%20(Direct)-success?style=for-the-badge&logo=android)](https://expo.dev/artifacts/eas/xNhGLgDStTZkIj2rfb8PtnWNXKuC1JF2CbWNRTql03w.apk)
+[![EAS Build](https://img.shields.io/badge/EAS%20Build-Finished-blue?style=for-the-badge&logo=expo)](https://expo.dev/accounts/kimchiha/projects/taskaura/builds/0021a039-d9e3-4d35-89e6-013800399b58)
+
+### 📲 Cài đặt ứng dụng trên Android:
+- **Tải trực tiếp file APK**: [**Download TaskAura_PRO.apk (Direct Link)**](https://expo.dev/artifacts/eas/xNhGLgDStTZkIj2rfb8PtnWNXKuC1JF2CbWNRTql03w.apk)
+- **Trang quản lý Build & QR code**: [Expo EAS Build Dashboard](https://expo.dev/accounts/kimchiha/projects/taskaura/builds/0021a039-d9e3-4d35-89e6-013800399b58)
+
 ---
 
 ## 📱 Project Overview
