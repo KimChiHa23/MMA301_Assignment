@@ -19,6 +19,8 @@
     "react-native-screens": "~4.26.0"
   },
   "devDependencies": {
+    "@emnapi/core": "^1.11.3",
+    "@emnapi/runtime": "^1.11.3",
     "@types/react": "~19.2.2",
     "eslint": "^9.39.5",
     "eslint-config-expo": "^57.0.2",
@@ -35,8 +37,6 @@
     "type-check": "tsc --noEmit",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
     "build:apk": "npx eas-cli build -p android --profile preview"
-
   },
-
   "private": true
 }
