@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
   View,
   Text,
@@ -15,6 +15,9 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { useTasks } from '../hooks/useTasks';
 import { Task, TaskStatus, CreateTaskInput, UpdateTaskInput } from '../types/task';
+import { Team } from '../types/team';
+import { subscribeToUserTeams } from '../services/teamService';
+import { useAuth } from '../contexts/AuthContext';
 import { TaskCard } from '../components/TaskCard';
 import { TaskFormModal } from '../components/TaskFormModal';
 import { Header } from '../components/Header';
@@ -25,6 +28,7 @@ type FilterType = 'all' | TaskStatus;
 export const HomeScreen: React.FC = () => {
   const { width } = useWindowDimensions();
   const isTablet = width >= 768;
+  const { user } = useAuth();
 
   const {
     tasks,
@@ -38,32 +42,53 @@ export const HomeScreen: React.FC = () => {
     seedInitialTasks,
   } = useTasks();
 
+  const [userTeams, setUserTeams] = useState<Team[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState<FilterType>('all');
   const [modalVisible, setModalVisible] = useState(false);
   const [taskToEdit, setTaskToEdit] = useState<Task | null>(null);
 
-  // Filter and search tasks
-  const filteredTasks = useMemo(() => {
+  // Subscribe to user's teams to filter tasks by membership
+  useEffect(() => {
+    if (!user?.id) return;
+    const unsubscribe = subscribeToUserTeams(
+      user.id,
+      (teams) => setUserTeams(teams),
+      (err) => console.error('Error fetching teams in HomeScreen:', err)
+    );
+    return () => unsubscribe();
+  }, [user?.id]);
+
+  const userTeamIds = useMemo(() => new Set(userTeams.map((t) => t.id)), [userTeams]);
+
+  // Filter tasks: permission filter (tasks in user's teams or personal/unassigned) + status + search
+  const visibleTasks = useMemo(() => {
     return tasks.filter((t) => {
-      const matchesFilter =
-        activeFilter === 'all' ? true : t.status === activeFilter;
+      // Task permissions: display if personal/no team OR user is a member of the team
+      const hasPermission = !t.teamId || userTeamIds.has(t.teamId);
+      if (!hasPermission) return false;
+
+      const matchesFilter = activeFilter === 'all' ? true : t.status === activeFilter;
       const matchesSearch =
         t.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (t.description && t.description.toLowerCase().includes(searchQuery.toLowerCase()));
+        (t.description && t.description.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (t.teamName && t.teamName.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (t.assigneeName && t.assigneeName.toLowerCase().includes(searchQuery.toLowerCase()));
+
       return matchesFilter && matchesSearch;
     });
-  }, [tasks, activeFilter, searchQuery]);
+  }, [tasks, userTeamIds, activeFilter, searchQuery]);
 
   // Status counts for filter chips
   const counts = useMemo(() => {
+    const accessible = tasks.filter((t) => !t.teamId || userTeamIds.has(t.teamId));
     return {
-      all: tasks.length,
-      todo: tasks.filter((t) => t.status === 'todo').length,
-      in_progress: tasks.filter((t) => t.status === 'in_progress').length,
-      done: tasks.filter((t) => t.status === 'done').length,
+      all: accessible.length,
+      todo: accessible.filter((t) => t.status === 'todo').length,
+      in_progress: accessible.filter((t) => t.status === 'in_progress').length,
+      done: accessible.filter((t) => t.status === 'done').length,
     };
-  }, [tasks]);
+  }, [tasks, userTeamIds]);
 
   const handleOpenCreateModal = () => {
     setTaskToEdit(null);
@@ -88,16 +113,15 @@ export const HomeScreen: React.FC = () => {
   };
 
   const handleToggleStatus = async (task: Task) => {
-    const nextStatus: TaskStatus =
-      task.status === 'done' ? 'todo' : 'done';
+    const nextStatus: TaskStatus = task.status === 'done' ? 'todo' : 'done';
     await updateTask(task.id, { status: nextStatus });
   };
 
   const filterTabs: { key: FilterType; label: string; count: number }[] = [
-    { key: 'all', label: 'All', count: counts.all },
-    { key: 'todo', label: 'To Do', count: counts.todo },
-    { key: 'in_progress', label: 'In Progress', count: counts.in_progress },
-    { key: 'done', label: 'Done', count: counts.done },
+    { key: 'all', label: 'Tất cả', count: counts.all },
+    { key: 'todo', label: 'Cần làm', count: counts.todo },
+    { key: 'in_progress', label: 'Đang làm', count: counts.in_progress },
+    { key: 'done', label: 'Hoàn thành', count: counts.done },
   ];
 
   return (
@@ -111,7 +135,7 @@ export const HomeScreen: React.FC = () => {
             <Ionicons name="search" size={18} color={COLORS.textMuted} />
             <TextInput
               style={styles.searchInput}
-              placeholder="Search tasks..."
+              placeholder="Tìm kiếm task, team, assignee..."
               placeholderTextColor={COLORS.textMuted}
               value={searchQuery}
               onChangeText={setSearchQuery}
@@ -126,7 +150,7 @@ export const HomeScreen: React.FC = () => {
           <TouchableOpacity
             onPress={handleOpenCreateModal}
             activeOpacity={0.85}
-            accessibilityLabel="Create New Task"
+            accessibilityLabel="Tạo Task Mới"
           >
             <LinearGradient
               colors={COLORS.gradients.primary}
@@ -135,7 +159,7 @@ export const HomeScreen: React.FC = () => {
               style={styles.createButton}
             >
               <Ionicons name="add" size={20} color="#FFFFFF" />
-              <Text style={styles.createButtonText}>Add Task</Text>
+              <Text style={styles.createButtonText}>Thêm</Text>
             </LinearGradient>
           </TouchableOpacity>
         </View>
@@ -147,31 +171,15 @@ export const HomeScreen: React.FC = () => {
             return (
               <TouchableOpacity
                 key={tab.key}
-                style={[
-                  styles.filterChip,
-                  isSelected && styles.filterChipSelected,
-                ]}
+                style={[styles.filterChip, isSelected && styles.filterChipSelected]}
                 onPress={() => setActiveFilter(tab.key)}
               >
-                <Text
-                  style={[
-                    styles.filterChipText,
-                    isSelected && styles.filterChipTextSelected,
-                  ]}
-                >
+                <Text style={[styles.filterChipText, isSelected && styles.filterChipTextSelected]}>
                   {tab.label}
                 </Text>
-                <View
-                  style={[
-                    styles.filterBadge,
-                    isSelected && styles.filterBadgeSelected,
-                  ]}
-                >
+                <View style={[styles.filterBadge, isSelected && styles.filterBadgeSelected]}>
                   <Text
-                    style={[
-                      styles.filterBadgeText,
-                      isSelected && styles.filterBadgeTextSelected,
-                    ]}
+                    style={[styles.filterBadgeText, isSelected && styles.filterBadgeTextSelected]}
                   >
                     {tab.count}
                   </Text>
@@ -193,11 +201,11 @@ export const HomeScreen: React.FC = () => {
         {loading ? (
           <View style={styles.loadingContainer}>
             <ActivityIndicator size="large" color={COLORS.primary} />
-            <Text style={styles.loadingText}>Loading tasks from Firestore...</Text>
+            <Text style={styles.loadingText}>Đang tải danh sách công việc...</Text>
           </View>
         ) : (
           <FlatList
-            data={filteredTasks}
+            data={visibleTasks}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
               <TaskCard
@@ -205,6 +213,7 @@ export const HomeScreen: React.FC = () => {
                 onEdit={handleOpenEditModal}
                 onDelete={handleDeleteTask}
                 onToggleStatus={handleToggleStatus}
+                canEditDelete={!item.teamId || userTeamIds.has(item.teamId)}
               />
             )}
             contentContainerStyle={styles.listContent}
@@ -222,17 +231,14 @@ export const HomeScreen: React.FC = () => {
                 <View style={styles.emptyIconCircle}>
                   <Ionicons name="file-tray-outline" size={38} color={COLORS.textMuted} />
                 </View>
-                <Text style={styles.emptyTitle}>No tasks found</Text>
+                <Text style={styles.emptyTitle}>Chưa có công việc nào</Text>
                 <Text style={styles.emptySubtitle}>
                   {searchQuery || activeFilter !== 'all'
-                    ? 'No tasks match your current filter or search criteria.'
-                    : 'Get started by creating your first task!'}
+                    ? 'Không có task nào khớp với tiêu chí tìm kiếm hoặc bộ lọc.'
+                    : 'Hãy bắt đầu tạo task mới hoặc chọn nhóm để cộng tác!'}
                 </Text>
                 <View style={styles.emptyActionRow}>
-                  <TouchableOpacity
-                    onPress={handleOpenCreateModal}
-                    activeOpacity={0.85}
-                  >
+                  <TouchableOpacity onPress={handleOpenCreateModal} activeOpacity={0.85}>
                     <LinearGradient
                       colors={COLORS.gradients.primary}
                       start={{ x: 0, y: 0 }}
@@ -240,17 +246,14 @@ export const HomeScreen: React.FC = () => {
                       style={styles.emptyAddButton}
                     >
                       <Ionicons name="add" size={18} color="#FFFFFF" />
-                      <Text style={styles.emptyAddButtonText}>Create Task Now</Text>
+                      <Text style={styles.emptyAddButtonText}>Tạo Task Ngay</Text>
                     </LinearGradient>
                   </TouchableOpacity>
 
                   {!searchQuery && activeFilter === 'all' && (
-                    <TouchableOpacity
-                      style={styles.seedButton}
-                      onPress={seedInitialTasks}
-                    >
+                    <TouchableOpacity style={styles.seedButton} onPress={seedInitialTasks}>
                       <Ionicons name="cloud-upload-outline" size={18} color={COLORS.primary} />
-                      <Text style={styles.seedButtonText}>Seed Sample Tasks</Text>
+                      <Text style={styles.seedButtonText}>Seed Mẫu Task</Text>
                     </TouchableOpacity>
                   )}
                 </View>
@@ -266,6 +269,7 @@ export const HomeScreen: React.FC = () => {
         onClose={() => setModalVisible(false)}
         onSubmit={handleFormSubmit}
         taskToEdit={taskToEdit}
+        userTeams={userTeams}
       />
     </SafeAreaView>
   );
@@ -301,7 +305,7 @@ const styles = StyleSheet.create({
     borderRadius: RADIUS.md,
     paddingHorizontal: 12,
     borderWidth: 1,
-    borderColor: '#DDD6FE', // Soft violet border
+    borderColor: '#DDD6FE',
     height: 44,
   },
   searchInput: {
@@ -313,7 +317,7 @@ const styles = StyleSheet.create({
   createButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 15,
+    paddingHorizontal: 14,
     height: 44,
     borderRadius: RADIUS.md,
     gap: 4,
@@ -345,7 +349,7 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   filterChipSelected: {
-    backgroundColor: '#EEF2FF', // Xanh tím nhạt
+    backgroundColor: '#EEF2FF',
     borderColor: '#818CF8',
   },
   filterChipText: {
@@ -354,7 +358,7 @@ const styles = StyleSheet.create({
     color: COLORS.textMuted,
   },
   filterChipTextSelected: {
-    color: '#4F46E5', // Indigo 600
+    color: '#4F46E5',
   },
   filterBadge: {
     backgroundColor: '#F1F5F9',

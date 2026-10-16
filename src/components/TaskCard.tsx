@@ -10,6 +10,7 @@ interface TaskCardProps {
   onEdit: (task: Task) => void;
   onDelete: (id: string, title: string) => void;
   onToggleStatus?: (task: Task) => void;
+  canEditDelete?: boolean;
 }
 
 export const TaskCard: React.FC<TaskCardProps> = ({
@@ -17,11 +18,11 @@ export const TaskCard: React.FC<TaskCardProps> = ({
   onEdit,
   onDelete,
   onToggleStatus,
+  canEditDelete = true,
 }) => {
   const statusConfig = COLORS.status[task.status] || COLORS.status.todo;
   const priorityConfig = COLORS.priority[task.priority] || COLORS.priority.medium;
 
-  // 2-3 blended gradient colors for left accent bar
   const getGradientColors = (): readonly [string, string, ...string[]] => {
     if (task.status === 'done') {
       return COLORS.gradients.taskStatus.done;
@@ -38,18 +39,14 @@ export const TaskCard: React.FC<TaskCardProps> = ({
   const gradientColors = getGradientColors();
 
   const handleDeletePress = () => {
-    Alert.alert(
-      'Delete Task',
-      `Are you sure you want to permanently delete "${task.title}"?`,
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Delete',
-          style: 'destructive',
-          onPress: () => onDelete(task.id, task.title),
-        },
-      ]
-    );
+    Alert.alert('Xóa Task', `Bạn có chắc chắn muốn xóa vĩnh viễn task "${task.title}"?`, [
+      { text: 'Hủy', style: 'cancel' },
+      {
+        text: 'Xóa',
+        style: 'destructive',
+        onPress: () => onDelete(task.id, task.title),
+      },
+    ]);
   };
 
   const isCompleted = task.status === 'done';
@@ -72,7 +69,11 @@ export const TaskCard: React.FC<TaskCardProps> = ({
             <View
               style={[
                 styles.badge,
-                { backgroundColor: statusConfig.bg, borderColor: statusConfig.border, borderWidth: 1 },
+                {
+                  backgroundColor: statusConfig.bg,
+                  borderColor: statusConfig.border,
+                  borderWidth: 1,
+                },
               ]}
             >
               <Text style={[styles.badgeText, { color: statusConfig.text }]}>
@@ -94,26 +95,28 @@ export const TaskCard: React.FC<TaskCardProps> = ({
             </View>
           </View>
 
-          {/* Action Buttons */}
-          <View style={styles.actions}>
-            <TouchableOpacity
-              style={styles.actionButton}
-              onPress={() => onEdit(task)}
-              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-              accessibilityLabel={`Edit task ${task.title}`}
-            >
-              <Ionicons name="create-outline" size={18} color={COLORS.primary} />
-            </TouchableOpacity>
+          {/* Action Buttons (Permission guarded) */}
+          {canEditDelete ? (
+            <View style={styles.actions}>
+              <TouchableOpacity
+                style={styles.actionButton}
+                onPress={() => onEdit(task)}
+                hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                accessibilityLabel={`Edit task ${task.title}`}
+              >
+                <Ionicons name="create-outline" size={17} color={COLORS.primary} />
+              </TouchableOpacity>
 
-            <TouchableOpacity
-              style={[styles.actionButton, styles.deleteButton]}
-              onPress={handleDeletePress}
-              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-              accessibilityLabel={`Delete task ${task.title}`}
-            >
-              <Ionicons name="trash-outline" size={18} color={COLORS.danger} />
-            </TouchableOpacity>
-          </View>
+              <TouchableOpacity
+                style={[styles.actionButton, styles.deleteButton]}
+                onPress={handleDeletePress}
+                hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                accessibilityLabel={`Delete task ${task.title}`}
+              >
+                <Ionicons name="trash-outline" size={17} color={COLORS.danger} />
+              </TouchableOpacity>
+            </View>
+          ) : null}
         </View>
 
         {/* Main Content Row */}
@@ -131,10 +134,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
           </TouchableOpacity>
 
           <View style={styles.textWrapper}>
-            <Text
-              style={[styles.title, isCompleted && styles.completedTitle]}
-              numberOfLines={2}
-            >
+            <Text style={[styles.title, isCompleted && styles.completedTitle]} numberOfLines={2}>
               {task.title}
             </Text>
 
@@ -146,18 +146,33 @@ export const TaskCard: React.FC<TaskCardProps> = ({
           </View>
         </View>
 
+        {/* Assignee & Team Information Tags */}
+        <View style={styles.metaRow}>
+          {/* Team Tag */}
+          <View style={styles.metaTag}>
+            <Ionicons name="people" size={13} color={COLORS.primary} />
+            <Text style={styles.metaText} numberOfLines={1}>
+              {task.teamName ? task.teamName : 'Cá nhân'}
+            </Text>
+          </View>
+
+          {/* Assignee Tag */}
+          <View style={[styles.metaTag, styles.assigneeTag]}>
+            <Ionicons name="person-circle-outline" size={14} color="#0284C7" />
+            <Text style={[styles.metaText, { color: '#0369A1' }]} numberOfLines={1}>
+              {task.assigneeName ? task.assigneeName : 'Chưa chỉ định'}
+            </Text>
+          </View>
+        </View>
+
         {/* Footer Info Row */}
         <View style={styles.footerRow}>
           <View style={styles.dateRow}>
             <Ionicons name="calendar-outline" size={13} color={COLORS.textMuted} />
-            <Text style={styles.dateText}>
-              Due: {task.dueDate ? task.dueDate : 'No due date'}
-            </Text>
+            <Text style={styles.dateText}>Hạn: {task.dueDate ? task.dueDate : 'Không có'}</Text>
           </View>
 
-          <Text style={styles.createdText}>
-            ID: {task.id.slice(0, 8)}...
-          </Text>
+          <Text style={styles.createdText}>ID: {task.id.slice(0, 6)}</Text>
         </View>
       </View>
     </View>
@@ -170,7 +185,7 @@ const styles = StyleSheet.create({
     borderRadius: RADIUS.md,
     marginBottom: SPACING.sm + 4,
     borderWidth: 1,
-    borderColor: '#EDE9FE', // Soft violet border
+    borderColor: '#EDE9FE',
     shadowColor: '#6366F1',
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.1,
@@ -189,7 +204,7 @@ const styles = StyleSheet.create({
     paddingLeft: SPACING.sm + 4,
   },
   completedCard: {
-    opacity: 0.82,
+    opacity: 0.85,
     backgroundColor: '#FAF5FF',
   },
   topRow: {
@@ -201,6 +216,7 @@ const styles = StyleSheet.create({
   badges: {
     flexDirection: 'row',
     gap: 6,
+    flexWrap: 'wrap',
   },
   badge: {
     flexDirection: 'row',
@@ -241,10 +257,10 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   title: {
-    fontSize: 16,
-    fontWeight: '600',
+    fontSize: 15,
+    fontWeight: '700',
     color: COLORS.text,
-    lineHeight: 22,
+    lineHeight: 21,
   },
   completedTitle: {
     textDecorationLine: 'line-through',
@@ -255,6 +271,31 @@ const styles = StyleSheet.create({
     color: COLORS.textMuted,
     marginTop: 4,
     lineHeight: 18,
+  },
+  metaRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginTop: 10,
+    flexWrap: 'wrap',
+  },
+  metaTag: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    backgroundColor: '#EEF2FF',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: RADIUS.sm,
+    maxWidth: '48%',
+  },
+  assigneeTag: {
+    backgroundColor: '#F0F9FF',
+  },
+  metaText: {
+    fontSize: 11,
+    fontWeight: '600',
+    color: COLORS.primaryDark,
   },
   footerRow: {
     flexDirection: 'row',

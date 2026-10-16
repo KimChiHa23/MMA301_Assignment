@@ -1,76 +1,134 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
+import { useAuth } from '../contexts/AuthContext';
 import { COLORS, SPACING, RADIUS } from '../constants/theme';
 import { isFirebaseConfigured } from '../services/firebase';
 
 export const ProfileScreen: React.FC = () => {
+  const { user, logout } = useAuth();
+
+  const handleLogout = () => {
+    Alert.alert('Đăng Xuất', 'Bạn có chắc chắn muốn đăng xuất khỏi tài khoản?', [
+      { text: 'Hủy', style: 'cancel' },
+      {
+        text: 'Đăng Xuất',
+        style: 'destructive',
+        onPress: async () => {
+          try {
+            await logout();
+          } catch (error) {
+            console.error('Logout error:', error);
+          }
+        },
+      },
+    ]);
+  };
+
+  const getInitials = (name: string): string => {
+    if (!name) return 'U';
+    const parts = name.trim().split(' ');
+    if (parts.length >= 2) {
+      return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase();
+    }
+    return name.slice(0, 2).toUpperCase();
+  };
+
   return (
     <SafeAreaView style={styles.safeArea} edges={['top']}>
       <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
-      {/* Profile Card */}
-      <View style={styles.card}>
-        <View style={styles.avatar}>
-          <Ionicons name="person" size={48} color={COLORS.primary} />
+        {/* Main Profile Card */}
+        <View style={styles.card}>
+          <LinearGradient
+            colors={COLORS.gradients.primary}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.avatarGradient}
+          >
+            <View style={styles.avatarInner}>
+              <Text style={styles.avatarText}>{getInitials(user?.name || '')}</Text>
+            </View>
+          </LinearGradient>
+
+          <Text style={styles.name}>{user?.name || 'Tài khoản người dùng'}</Text>
+          <Text style={styles.email}>{user?.email || 'Chưa cập nhật email'}</Text>
+
+          <View style={styles.badge}>
+            <View style={styles.activeDot} />
+            <Text style={styles.badgeText}>Tài khoản đã xác thực</Text>
+          </View>
+
+          {/* Account Details Section */}
+          <View style={styles.infoSection}>
+            <View style={styles.infoRow}>
+              <View style={styles.infoIconWrapper}>
+                <Ionicons name="key-outline" size={18} color={COLORS.primary} />
+              </View>
+              <View style={styles.infoContent}>
+                <Text style={styles.infoLabel}>User ID (UID)</Text>
+                <Text style={styles.infoValue} numberOfLines={1} ellipsizeMode="middle">
+                  {user?.id || 'N/A'}
+                </Text>
+              </View>
+            </View>
+
+            <View style={styles.infoRow}>
+              <View style={styles.infoIconWrapper}>
+                <Ionicons name="shield-checkmark-outline" size={18} color={COLORS.primary} />
+              </View>
+              <View style={styles.infoContent}>
+                <Text style={styles.infoLabel}>Xác thực</Text>
+                <Text style={styles.infoValue}>Firebase Auth (Email / Password)</Text>
+              </View>
+            </View>
+
+            <View style={styles.infoRow}>
+              <View style={styles.infoIconWrapper}>
+                <Ionicons name="server-outline" size={18} color={COLORS.primary} />
+              </View>
+              <View style={styles.infoContent}>
+                <Text style={styles.infoLabel}>Database Cloud</Text>
+                <Text
+                  style={[
+                    styles.infoValue,
+                    { color: isFirebaseConfigured ? COLORS.success : '#D97706' },
+                  ]}
+                >
+                  {isFirebaseConfigured ? 'Cloud Firestore (Real-time Sync)' : 'Offline / Mock'}
+                </Text>
+              </View>
+            </View>
+
+            <View style={styles.infoRow}>
+              <View style={styles.infoIconWrapper}>
+                <Ionicons name="school-outline" size={18} color={COLORS.primary} />
+              </View>
+              <View style={styles.infoContent}>
+                <Text style={styles.infoLabel}>Dự Án</Text>
+                <Text style={styles.infoValue}>MMA301 – Practical Exam 2</Text>
+              </View>
+            </View>
+          </View>
+
+          {/* Logout Button */}
+          <TouchableOpacity
+            style={styles.logoutButton}
+            onPress={handleLogout}
+            activeOpacity={0.8}
+            accessibilityLabel="Đăng xuất khỏi hệ thống"
+          >
+            <Ionicons
+              name="log-out-outline"
+              size={20}
+              color={COLORS.danger}
+              style={{ marginRight: 8 }}
+            />
+            <Text style={styles.logoutButtonText}>Đăng Xuất</Text>
+          </TouchableOpacity>
         </View>
-
-        <Text style={styles.name}>Student Developer</Text>
-        <Text style={styles.role}>Practical Exam 1 – MMA301</Text>
-        <View style={styles.badge}>
-          <Text style={styles.badgeText}>Full Profile Coming in Exam 2</Text>
-        </View>
-
-        <View style={styles.infoSection}>
-          <View style={styles.infoRow}>
-            <View style={styles.infoIconWrapper}>
-              <Ionicons name="sparkles" size={18} color={COLORS.primary} />
-            </View>
-            <View style={styles.infoContent}>
-              <Text style={styles.infoLabel}>Application</Text>
-              <Text style={styles.infoValue}>TaskAura PRO (v1.0)</Text>
-            </View>
-          </View>
-
-          <View style={styles.infoRow}>
-            <View style={styles.infoIconWrapper}>
-              <Ionicons name="school-outline" size={18} color={COLORS.primary} />
-            </View>
-            <View style={styles.infoContent}>
-              <Text style={styles.infoLabel}>Course</Text>
-              <Text style={styles.infoValue}>MMA301 – Mobile Programming</Text>
-            </View>
-          </View>
-
-          <View style={styles.infoRow}>
-            <View style={styles.infoIconWrapper}>
-              <Ionicons name="code-slash-outline" size={18} color={COLORS.primary} />
-            </View>
-            <View style={styles.infoContent}>
-              <Text style={styles.infoLabel}>Technology Stack</Text>
-              <Text style={styles.infoValue}>React Native (Expo), TypeScript, Firestore</Text>
-            </View>
-          </View>
-
-          <View style={styles.infoRow}>
-            <View style={styles.infoIconWrapper}>
-              <Ionicons name="server-outline" size={18} color={COLORS.primary} />
-            </View>
-            <View style={styles.infoContent}>
-              <Text style={styles.infoLabel}>Firestore Status</Text>
-              <Text
-                style={[
-                  styles.infoValue,
-                  { color: isFirebaseConfigured ? COLORS.success : '#D97706' },
-                ]}
-              >
-                {isFirebaseConfigured ? 'Connected to Cloud Firestore' : 'Running in Ready/Demo Mode'}
-              </Text>
-            </View>
-          </View>
-        </View>
-      </View>
-    </ScrollView>
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -95,54 +153,73 @@ const styles = StyleSheet.create({
     maxWidth: 500,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: COLORS.border,
-    shadowColor: '#0F172A',
+    borderColor: '#EDE9FE',
+    shadowColor: '#6366F1',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.06,
-    shadowRadius: 10,
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
     elevation: 3,
   },
-  avatar: {
+  avatarGradient: {
     width: 88,
     height: 88,
     borderRadius: 44,
-    backgroundColor: COLORS.primaryLight,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: SPACING.md,
-    borderWidth: 3,
-    borderColor: '#FFFFFF',
     shadowColor: COLORS.primary,
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
+    shadowOpacity: 0.25,
     shadowRadius: 8,
-    elevation: 4,
+    elevation: 5,
+  },
+  avatarInner: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: '#FFFFFF',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  avatarText: {
+    fontSize: 26,
+    fontWeight: '800',
+    color: COLORS.primary,
   },
   name: {
     fontSize: 22,
-    fontWeight: '700',
+    fontWeight: '800',
     color: COLORS.text,
   },
-  role: {
+  email: {
     fontSize: 14,
     color: COLORS.textMuted,
-    marginTop: 2,
+    marginTop: 4,
     fontWeight: '500',
   },
   badge: {
+    flexDirection: 'row',
+    alignItems: 'center',
     backgroundColor: '#EEF2FF',
     borderColor: '#C7D2FE',
     borderWidth: 1,
     paddingHorizontal: 12,
-    paddingVertical: 4,
+    paddingVertical: 5,
     borderRadius: RADIUS.full,
     marginTop: 10,
     marginBottom: SPACING.lg,
+    gap: 6,
+  },
+  activeDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: COLORS.success,
   },
   badgeText: {
-    color: COLORS.primary,
+    color: COLORS.primaryDark,
     fontSize: 12,
-    fontWeight: '600',
+    fontWeight: '700',
   },
   infoSection: {
     width: '100%',
@@ -150,6 +227,8 @@ const styles = StyleSheet.create({
     borderRadius: RADIUS.md,
     padding: SPACING.md,
     gap: 14,
+    borderWidth: 1,
+    borderColor: '#F1F5F9',
   },
   infoRow: {
     flexDirection: 'row',
@@ -160,11 +239,11 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: RADIUS.sm,
-    backgroundColor: COLORS.card,
+    backgroundColor: '#FFFFFF',
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
-    borderColor: COLORS.border,
+    borderColor: '#E2E8F0',
   },
   infoContent: {
     flex: 1,
@@ -180,5 +259,22 @@ const styles = StyleSheet.create({
     color: COLORS.text,
     fontWeight: '600',
     marginTop: 2,
+  },
+  logoutButton: {
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: COLORS.dangerLight,
+    borderWidth: 1,
+    borderColor: '#FECDD3',
+    paddingVertical: 12,
+    borderRadius: RADIUS.md,
+    marginTop: SPACING.lg,
+  },
+  logoutButtonText: {
+    color: COLORS.danger,
+    fontSize: 15,
+    fontWeight: '700',
   },
 });

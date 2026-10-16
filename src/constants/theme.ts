@@ -32,7 +32,7 @@ export const COLORS = {
       low: ['#2DD4BF', '#60A5FA', '#818CF8'] as const, // Mint -> Sky -> Xanh tím
     },
   },
-  
+
   // Status colors for chips and badges
   status: {
     todo: {

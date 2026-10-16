@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
+import { useAuth } from '../contexts/AuthContext';
 import { COLORS, SPACING, RADIUS } from '../constants/theme';
 import { isFirebaseConfigured } from '../services/firebase';
 
@@ -11,13 +12,14 @@ interface HeaderProps {
 }
 
 export const Header: React.FC<HeaderProps> = ({
-  subtitle = 'Smart task management with live cloud sync',
+  subtitle = 'Quản lý task thông minh & cộng tác realtime',
 }) => {
+  const { user } = useAuth();
+
   return (
     <View style={styles.container}>
       <View style={styles.topRow}>
         <View style={styles.titleWrapper}>
-          {/* Brand New Modern App Logo with 3-Color Blended Gradient & Dual-layer Icon */}
           <LinearGradient
             colors={COLORS.gradients.primary}
             start={{ x: 0, y: 0 }}
@@ -29,7 +31,6 @@ export const Header: React.FC<HeaderProps> = ({
             </View>
           </LinearGradient>
 
-          {/* Re-designed Brand Typography */}
           <View style={styles.brandContent}>
             <View style={styles.nameRow}>
               <Text style={styles.brandName}>
@@ -40,7 +41,6 @@ export const Header: React.FC<HeaderProps> = ({
               </View>
             </View>
 
-            {/* Live Firestore Connection Status */}
             <View style={styles.badgeRow}>
               <View
                 style={[
@@ -49,11 +49,25 @@ export const Header: React.FC<HeaderProps> = ({
                 ]}
               />
               <Text style={styles.badgeText}>
-                {isFirebaseConfigured ? 'Live Cloud: mma301-1cae2' : 'Firestore Demo Mode'}
+                {isFirebaseConfigured ? 'Live Cloud: mma301-1cae2' : 'Offline Mode'}
               </Text>
             </View>
           </View>
         </View>
+
+        {/* User Mini Avatar / Name on Right */}
+        {user ? (
+          <View style={styles.userBadge}>
+            <View style={styles.userAvatarCircle}>
+              <Text style={styles.userAvatarText}>
+                {user.name ? user.name[0].toUpperCase() : 'U'}
+              </Text>
+            </View>
+            <Text style={styles.userNameText} numberOfLines={1}>
+              {user.name.split(' ').slice(-1)[0]}
+            </Text>
+          </View>
+        ) : null}
       </View>
 
       {subtitle ? <Text style={styles.subtitle}>{subtitle}</Text> : null}
@@ -68,7 +82,7 @@ const styles = StyleSheet.create({
     paddingTop: SPACING.md,
     paddingBottom: SPACING.sm + 2,
     borderBottomWidth: 1,
-    borderBottomColor: '#EDE9FE', // Soft violet border
+    borderBottomColor: '#EDE9FE',
   },
   topRow: {
     flexDirection: 'row',
@@ -81,8 +95,8 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   logoContainer: {
-    width: 48,
-    height: 48,
+    width: 46,
+    height: 46,
     borderRadius: RADIUS.md + 2,
     alignItems: 'center',
     justifyContent: 'center',
@@ -93,8 +107,8 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   logoInnerBorder: {
-    width: 42,
-    height: 42,
+    width: 40,
+    height: 40,
     borderRadius: RADIUS.md,
     borderWidth: 1.5,
     borderColor: 'rgba(255, 255, 255, 0.45)',
@@ -111,13 +125,13 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   brandName: {
-    fontSize: 23,
+    fontSize: 22,
     fontWeight: '800',
     color: '#0F172A',
     letterSpacing: -0.5,
   },
   brandHighlight: {
-    color: '#6366F1', // Periwinkle / Blue-violet
+    color: '#6366F1',
     fontWeight: '900',
   },
   proBadge: {
@@ -141,19 +155,49 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   statusDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
+    width: 7,
+    height: 7,
+    borderRadius: 3.5,
   },
   badgeText: {
-    fontSize: 12,
+    fontSize: 11,
     color: '#4F46E5',
     fontWeight: '600',
   },
+  userBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: RADIUS.full,
+    maxWidth: 120,
+  },
+  userAvatarCircle: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: COLORS.primaryLight,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  userAvatarText: {
+    fontSize: 11,
+    fontWeight: '800',
+    color: COLORS.primary,
+  },
+  userNameText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: COLORS.text,
+  },
   subtitle: {
-    fontSize: 13,
+    fontSize: 12,
     color: COLORS.textMuted,
     marginTop: SPACING.xs + 2,
-    lineHeight: 18,
+    lineHeight: 17,
   },
 });
