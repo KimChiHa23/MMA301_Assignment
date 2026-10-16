@@ -30,6 +30,8 @@ export const getAuthErrorMessage = (errorCode: string): string => {
       return 'Bạn đã thử quá nhiều lần. Vui lòng đợi trong giây lát rồi thử lại.';
     case 'auth/network-request-failed':
       return 'Không thể kết nối mạng. Vui lòng kiểm tra kết nối internet của bạn.';
+    case 'auth/configuration-not-found':
+      return 'Dịch vụ xác thực Firebase chưa được kích hoạt trên Firebase Console. Vui lòng bật Email/Password Provider trong Authentication > Sign-in method.';
     default:
       return 'Đã xảy ra lỗi xác thực. Vui lòng thử lại.';
   }
